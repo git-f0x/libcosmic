@@ -248,7 +248,7 @@ impl Context {
                         text_color: Some(cosmic.background.on.into()),
                         background: Some(Color::from(cosmic.background.base).into()),
                         border: iced::Border {
-                            radius: corners.radius_m.into(),
+                            radius: corners.radius_s.into(),
                             width: 1.0,
                             color: cosmic.background.divider.into(),
                         },
