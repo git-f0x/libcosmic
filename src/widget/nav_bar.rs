@@ -154,6 +154,7 @@ impl<'a, Message: Clone + 'static> From<NavBar<'a, Message>>
             .padding(space_xxs)
             .apply(scrollable)
             .class(crate::style::iced::Scrollable::Minimal)
+            .scrollbar_padding(0)
             .height(Length::Fill)
             .apply(container)
             .height(Length::Fill)

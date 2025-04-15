@@ -92,14 +92,17 @@ impl<'a, Message: Clone + 'static> ContextDrawer<'a, Message> {
             let pane = column::with_capacity(3)
                 .push(header)
                 .push(
-                    scrollable(container(drawer).padding([
-                        0,
-                        horizontal_padding,
-                        if footer.is_some() { 0 } else { space_l },
-                        horizontal_padding,
-                    ]))
-                    .height(Length::Fill)
-                    .width(Length::Shrink),
+                    container(drawer)
+                        .padding([
+                            0,
+                            horizontal_padding,
+                            if footer.is_some() { 0 } else { space_l },
+                            horizontal_padding,
+                        ])
+                        .apply(scrollable)
+                        .scrollbar_padding(0)
+                        .height(Length::Fill)
+                        .width(Length::Shrink),
                 )
                 .push_maybe(footer);
 
