@@ -259,7 +259,7 @@ pub use taffy::JustifyContent;
 
 pub mod list;
 #[doc(inline)]
-pub use list::{ListColumn, list_column};
+pub use list::{ButtonColumn, ListColumn, button_column, list_column};
 
 pub mod menu;
 

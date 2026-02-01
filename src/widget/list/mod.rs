@@ -3,4 +3,8 @@
 
 pub mod column;
 
+pub mod button_column;
+
 pub use self::column::{ListColumn, list_column};
+
+pub use self::button_column::{ButtonColumn, button_column};

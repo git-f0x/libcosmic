@@ -67,7 +67,7 @@ impl<'a, Message: 'static> ListColumn<'a, Message> {
                 container(item).align_y(iced::Alignment::Center),
                 vertical_space().height(iced::Length::Fixed(32.))
             ]
-            .padding(this.list_item_padding)
+            .padding(0)
             .align_y(iced::Alignment::Center);
 
             this.children.push(list_item.into());
