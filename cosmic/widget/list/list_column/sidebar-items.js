@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["button","list_column","with_capacity"],"struct":["ListButton","ListColumn"]};
