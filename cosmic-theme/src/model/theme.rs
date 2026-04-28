@@ -1291,7 +1291,7 @@ impl ThemeBuilder {
                 Srgba::new(0.0, 0.0, 0.0, 0.0),
                 accent,
                 on_bg_component,
-                Srgba::new(0.0, 0.0, 0.0, 0.0),
+                button_hovered_overlay,
                 button_pressed_overlay,
                 is_high_contrast,
                 control_steps_array[8],

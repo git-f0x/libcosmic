@@ -28,8 +28,8 @@ pub enum Button {
     Image,
     Link,
     ListItem([f32; 4]),
-    MenuFolder,
-    MenuItem,
+    MenuFolder([f32; 4]),
+    MenuItem([f32; 4]),
     MenuRoot,
     NavToggle,
     #[default]
@@ -139,15 +139,6 @@ pub fn appearance(
             appearance.icon_color = Some(cosmic.background.on.into());
             appearance.text_color = Some(cosmic.background.on.into());
         }
-        Button::MenuFolder => {
-            // Menu folders cannot be disabled, ignore customized icon and text color
-            let component = &cosmic.background.component;
-            let (background, _, _) = color(component);
-            appearance.background = Some(Background::Color(background));
-            appearance.icon_color = Some(component.on.into());
-            appearance.text_color = Some(component.on.into());
-            corner_radii = &cosmic.corner_radii.radius_s;
-        }
         Button::ListItem(radii) => {
             corner_radii = radii;
             let (background, text, icon) = color(&cosmic.list_button);
@@ -163,12 +154,21 @@ pub fn appearance(
                 appearance.text_color = text;
             }
         }
-        Button::MenuItem => {
-            let (background, text, icon) = color(&cosmic.background.component);
+        Button::MenuFolder(radii) => {
+            // Menu folders cannot be disabled, ignore customized icon and text color
+            let component = &cosmic.list_button;
+            let (background, _, _) = color(component);
+            appearance.background = Some(Background::Color(background));
+            appearance.icon_color = Some(component.on.into());
+            appearance.text_color = Some(component.on.into());
+            corner_radii = radii;
+        }
+        Button::MenuItem(radii) => {
+            let (background, text, icon) = color(&cosmic.list_button);
             appearance.background = Some(Background::Color(background));
             appearance.icon_color = icon;
             appearance.text_color = text;
-            corner_radii = &cosmic.corner_radii.radius_s;
+            corner_radii = radii;
         }
         Button::MenuRoot => {
             appearance.background = None;

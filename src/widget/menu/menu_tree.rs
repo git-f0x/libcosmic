@@ -139,6 +139,7 @@ impl<Message: Clone + 'static> From<crate::Element<'static, Message>> for MenuTr
 
 pub fn menu_button<'a, Message>(
     children: Vec<crate::Element<'a, Message>>,
+    radii: [f32; 4],
 ) -> crate::widget::Button<'a, Message>
 where
     Message: std::clone::Clone + 'a,
@@ -152,7 +153,7 @@ where
     .height(Length::Fixed(36.0))
     .padding([4, 16])
     .width(Length::Fill)
-    .class(theme::Button::MenuItem)
+    .class(theme::Button::MenuItem(radii))
 }
 
 #[derive(Clone)]
@@ -239,6 +240,8 @@ pub fn menu_items<
     let key_class = theme::Text::Custom(key_style);
 
     let size = children.len();
+    let last_index = size.saturating_sub(1);
+    let radius_s = theme::active().cosmic().radius_s();
 
     children
         .into_iter()
@@ -274,7 +277,9 @@ pub fn menu_items<
                         );
                     }
 
-                    let menu_button = menu_button(items).on_press(action.message());
+                    let menu_button =
+                        menu_button(items, get_radius(radius_s, i == 0, i == last_index))
+                            .on_press(action.message());
 
                     trees.push(MenuTree::<Message>::from(Element::from(menu_button)));
                 }
@@ -306,7 +311,8 @@ pub fn menu_items<
                         );
                     }
 
-                    let menu_button = menu_button(items);
+                    let menu_button =
+                        menu_button(items, get_radius(radius_s, i == 0, i == last_index));
 
                     trees.push(MenuTree::<Message>::from(Element::from(menu_button)));
                 }
@@ -354,7 +360,8 @@ pub fn menu_items<
                     }
 
                     trees.push(MenuTree::from(Element::from(
-                        menu_button(items).on_press(action.message()),
+                        menu_button(items, get_radius(radius_s, i == 0, i == last_index))
+                            .on_press(action.message()),
                     )));
                 }
                 MenuItem::Folder(label, children) => {
@@ -362,26 +369,37 @@ pub fn menu_items<
 
                     trees.push(MenuTree::<Message>::with_children(
                         RcElementWrapper::new(crate::Element::from(
-                            menu_button::<'static, _>(vec![
-                                widget::text(l.clone())
-                                    .ellipsize(iced_core::text::Ellipsize::Middle(
-                                        iced_core::text::EllipsizeHeightLimit::Lines(1),
-                                    ))
-                                    .into(),
-                                widget::space::horizontal().into(),
-                                widget::icon::from_name("pan-end-symbolic")
-                                    .size(16)
-                                    .icon()
-                                    .into(),
-                            ])
+                            menu_button::<'static, _>(
+                                vec![
+                                    widget::text(l.clone())
+                                        .ellipsize(iced_core::text::Ellipsize::Middle(
+                                            iced_core::text::EllipsizeHeightLimit::Lines(1),
+                                        ))
+                                        .into(),
+                                    widget::space::horizontal().into(),
+                                    widget::icon::from_name("pan-end-symbolic")
+                                        .size(16)
+                                        .icon()
+                                        .into(),
+                                ],
+                                get_radius(radius_s, i == 0, i == last_index),
+                            )
                             .class(
                                 // Menu folders have no on_press so they take on the disabled style by default
                                 if children.is_empty() {
                                     // This will make the folder use the disabled style if it has no children
-                                    theme::Button::MenuItem
+                                    theme::Button::MenuItem(get_radius(
+                                        radius_s,
+                                        i == 0,
+                                        i == last_index,
+                                    ))
                                 } else {
                                     // This will make the folder use the enabled style if it has children
-                                    theme::Button::MenuFolder
+                                    theme::Button::MenuFolder(get_radius(
+                                        radius_s,
+                                        i == 0,
+                                        i == last_index,
+                                    ))
                                 },
                             ),
                         )),
@@ -399,4 +417,13 @@ pub fn menu_items<
             trees
         })
         .collect()
+}
+
+fn get_radius(radius: [f32; 4], first: bool, last: bool) -> [f32; 4] {
+    match (first, last) {
+        (true, true) => radius,
+        (true, false) => [radius[0], radius[1], 0.0, 0.0],
+        (false, true) => [0.0, 0.0, radius[2], radius[3]],
+        (false, false) => [0.0, 0.0, 0.0, 0.0],
+    }
 }
